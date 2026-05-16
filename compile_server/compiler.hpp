@@ -1,11 +1,11 @@
 #pragma once
 
-#include "comm/log.hpp"
-#include "comm/util.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include "../comm/log.hpp"
+#include "../comm/util.hpp"
 
 using namespace LogModule;
 // 只负责代码的编译
@@ -45,7 +45,7 @@ public:
             waitpid(pid, NULL, 0);
             if(FileUtil::IsFileExits(PathUtil::Exe(filename)))
             {
-                LOG(INFO) << "Compile " << filename << " success";
+                LOG(INFO) << "Compile [" << filename << "] success";
                 return true;
             }
         }
