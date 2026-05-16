@@ -1,5 +1,4 @@
-#ifndef __MUTEX_HPP__
-#define __MUTEX_HPP__
+#pragma once
 
 #include <iostream>
 #include <pthread.h>
@@ -49,5 +48,3 @@ class LockGuard
         Mutex &_m;
     };
 }
-
-#endif

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <fcntl.h>
+
 #include "../comm/log.hpp"
 #include "../comm/util.hpp"
 
@@ -28,7 +25,7 @@ public:
             // 创建一个文件来装程序运行时的标准错误，创建、打开，最后重定向标准错误到这个文件
             // 掩码设为0，创建的文件权限好设置
             umask(0);
-            int errfd = open(PathUtil::Stderr(filename).c_str(), O_CREAT | O_WRONLY, 0644);
+            int errfd = open(PathUtil::Compile_err(filename).c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
             if(errfd < 0)
             {
                 LOG(ERROR) << "open error";

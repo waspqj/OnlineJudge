@@ -2,6 +2,10 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <iostream>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <fcntl.h>
 
 #define temp_path "./temp/"
 struct PathUtil 
@@ -14,6 +18,7 @@ struct PathUtil
         pathname += suffix;
         return pathname;
     }
+    // 编译时对应文件
     // 构建并得到源文件完整路径
     static std::string Src(const std::string& filename) 
     {
@@ -24,10 +29,26 @@ struct PathUtil
     {
         return PathUtil::AddSuffix(filename, ".exe");
     }
-    // 构建并得到标准错误文件完整路径
-    static std::string Stderr(const std::string& filename)
+    // 构建并得到编译时错误文件完整路径
+    static std::string Compile_err(const std::string& filename)
     {
-        return PathUtil::AddSuffix(filename, ".stderr");
+        return PathUtil::AddSuffix(filename, ".compile_err");
+    }
+    // 运行时对应文件
+    // 构建并得到标准输出文件完整路径
+    static std::string Stdout(const std::string& filename)
+    {
+        return PathUtil::AddSuffix(filename, ".stdout");
+    }
+    // 构建并得到标准输入文件完整路径
+    static std::string Stdin(const std::string& filename)
+    {
+        return PathUtil::AddSuffix(filename, ".stdin");
+    }
+    // 构建并得到运行时错误文件完整路径
+    static std::string Run_err(const std::string& filename)
+    {
+        return PathUtil::AddSuffix(filename, ".run_err");
     }
 
 };
@@ -42,3 +63,4 @@ struct FileUtil
         return false;
     }
 };
+

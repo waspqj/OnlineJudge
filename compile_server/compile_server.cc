@@ -1,7 +1,7 @@
 #include "compiler.hpp"
-
+#include "runner.hpp"
 int main()
 {
-    LOG(DEBUG)<< Compiler::Compile("hello");
-    // std::cout<< Compiler::Compile("hello");
+    Compiler::Compile("hello");
+    Runner::Run("hello");
 }

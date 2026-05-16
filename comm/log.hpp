@@ -1,5 +1,4 @@
-#ifndef __LOG_HPP__
-#define __LOG_HPP__
+#pragma once
 
 #include "Mutex.hpp"
 #include <filesystem>
@@ -194,5 +193,3 @@ namespace LogModule
     #define Use_Screen_Log_Strategy logger.UseScreenLogStrategy()
     #define Use_File_Log_Strategy logger.UseFileLogStrategy()
 }
-
-#endif
