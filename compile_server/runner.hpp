@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sys/resource.h>
 #include "../comm/util.hpp"
 #include "../comm/log.hpp"
 
@@ -12,7 +13,19 @@ public:
     Runner(){}
     ~Runner(){}
 public:
-    static int Run(const std::string& filename)
+    // 设置资源设置
+    static void SetProcLimit(int cpu_limit, int mem_limit)
+    {
+        struct rlimit rl;
+        // 设置cpu时间限制
+        rl.rlim_cur = rl.rlim_max = cpu_limit;
+        // setrlimit(RLIMIT_CPU, &rl);
+        // 设置内存限制
+        rl.rlim_cur = rl.rlim_max = mem_limit * 1024; // 单位kb
+        setrlimit(RLIMIT_AS, &rl);
+        
+    }
+    static int Run(const std::string& filename, int cpu_limit, int mem_limit)
     {
         // 创建并打开三个文件,分别对应标准 输入 输出 错误, 重定向
         umask(0);
@@ -40,6 +53,8 @@ public:
             dup2(fd_in, 0);
             dup2(fd_out, 1);
             dup2(fd_err, 2);
+            // 设置资源设置
+            SetProcLimit(cpu_limit, mem_limit);
             // 程序替换,运行可执行
             execl(PathUtil::Exe(filename).c_str(), PathUtil::Exe(filename).c_str(), NULL);
             LOG(ERROR) << "execl error";

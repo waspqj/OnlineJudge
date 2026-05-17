@@ -3,5 +3,5 @@
 int main()
 {
     Compiler::Compile("hello");
-    Runner::Run("hello");
+    Runner::Run("hello", -1, 40 * 1024);
 }
