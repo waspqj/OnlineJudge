@@ -18,8 +18,9 @@ public:
     {
         struct rlimit rl;
         // 设置cpu时间限制
-        rl.rlim_cur = rl.rlim_max = cpu_limit;
-        // setrlimit(RLIMIT_CPU, &rl);
+        rl.rlim_cur = cpu_limit;
+        rl.rlim_max = RLIM_INFINITY;
+        setrlimit(RLIMIT_CPU, &rl);
         // 设置内存限制
         rl.rlim_cur = rl.rlim_max = mem_limit * 1024; // 单位kb
         setrlimit(RLIMIT_AS, &rl);
