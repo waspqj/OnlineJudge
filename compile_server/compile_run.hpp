@@ -9,6 +9,22 @@ class CompileAndRun
 public:
     CompileAndRun(){}
     ~CompileAndRun(){}
+    // 删除临时文件
+    static void RemoveTempFile(const std::string &filename)
+    {
+        std::string src = PathUtil::Src(filename);
+        if(FileUtil::IsFileExits(src)) unlink(src.c_str());
+        std::string exe = PathUtil::Exe(filename);
+        if(FileUtil::IsFileExits(exe)) unlink(exe.c_str());
+        std::string std_in = PathUtil::Stdin(filename);
+        if(FileUtil::IsFileExits(std_in)) unlink(std_in.c_str());
+        std::string std_out = PathUtil::Stdout(filename);
+        if(FileUtil::IsFileExits(std_out)) unlink(std_out.c_str());
+        std::string run_err = PathUtil::Run_err(filename);
+        if(FileUtil::IsFileExits(run_err)) unlink(run_err.c_str());
+        std::string compile_err = PathUtil::Compile_err(filename);
+        if(FileUtil::IsFileExits(compile_err)) unlink(compile_err.c_str());
+    }
 
     static std::string StatuToReason(int status, const std::string &filename)
     {
@@ -69,7 +85,7 @@ public:
             goto END;
         }
         // compile
-        if(Compiler::Compile(PathUtil::Src(filename)) == false)
+        if(Compiler::Compile(filename) == false)
         {
             status = -3; // 编译失败
             goto END;
@@ -101,5 +117,7 @@ public:
         }
         Json::FastWriter writer;
         *out_json = writer.write(out_json_value);
+
+        RemoveTempFile(filename);
     }
 };

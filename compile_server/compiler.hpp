@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "../comm/log.hpp"
 #include "../comm/util.hpp"
 
