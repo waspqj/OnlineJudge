@@ -2,7 +2,8 @@
 
 #include "oj_model.hpp"
 #include "oj_view.hpp"
-#include "../compile_server/compile_run.hpp"
+#include "../comm/util.hpp"
+#include "../source/http/httpClient.hpp"
 #include <mutex>
 
 class Machine
@@ -171,5 +172,57 @@ public:
             view.Error("获取单个题目页面失败!", html);
             return false;
         }
+    }
+
+    // 构建,发送并接收OJ请求
+    void Judge(const std::string &number, const std::string &in_json, std::string *out_json)
+    {
+        struct Question question;
+        if(!model.GetQuestion(number, &question))
+            return; 
+        // 解析输入的json
+        Json::Value in_value;
+        Json::Reader reader;
+        if(!reader.parse(in_json, in_value))
+            return;
+        std::string code = in_value["code"].asString();
+        // 构建编译运行参数
+        Json::Value compile_value;
+        Json::FastWriter writer;
+        compile_value["code"] = code + question.tail;  // 真正拿去编译的代码,加上测试用例
+        compile_value["input"] = in_value["input"];
+        compile_value["cpu_limit"] = question.cpu_limit;
+        compile_value["mem_limit"] = question.mem_limit;
+        std::string compile_in_json = writer.write(compile_value);
+        // 获取机器
+        while(true)
+        {
+            int id = -1;
+            Machine* machine = nullptr;
+            if(!lb.SmartChoice(&id, &machine))
+            {
+                LOG(ERROR)<< "没有可用的机器!";
+                return;
+            }
+            // 向机器申请网络服务
+            HttpClient client(machine->ip, machine->port);
+            machine->IncreaseLoad(); // 增加负载
+            if(auto ret = client.HttpPost("/compile_run", compile_in_json))
+            {
+                machine->DecreaseLoad(); // 调用完了,减少负载
+                if(ret != nullptr && ret->_statu == 200)
+                {
+                    *out_json = ret->_body;
+                    LOG(INFO) << "编译运行成功……";
+                    break;
+                }
+            }
+            // 申请服务失败，或者服务器返回错误---编译运行失败
+            // 设置机器为离线
+            LOG(ERROR)<< "当前申请的主机："<< id<< " 可能已经离线，尽快检查！";
+            lb.OfflineMachine(id);
+            lb.ShowMachines();
+        }
+        
     }
 };

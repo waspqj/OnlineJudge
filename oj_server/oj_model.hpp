@@ -23,8 +23,8 @@ struct Question
     std::string tail;      // 测试代码
 };
 
-const std::string question_list = "./questions/question.list";
-const std::string question_dir = "./questions/";
+const std::string question_list = "./question/question.list";
+const std::string question_dir = "./question/";
 
 class Model
 {

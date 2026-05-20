@@ -1,5 +1,5 @@
 oj_server: oj_server.cc
-	g++ -g $^ -o $@
+	g++ -g $^ -o $@ -ljsoncpp
 
 .PHONY: clean
 clean:
