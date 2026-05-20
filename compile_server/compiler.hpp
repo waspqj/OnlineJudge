@@ -32,7 +32,7 @@ public:
             }
             dup2(errfd, 2);
             // 程序替换：g++生成可执行
-            execlp("g++", "g++", "-o", PathUtil::Exe(filename).c_str(), PathUtil::Src(filename).c_str(), NULL);
+            execlp("g++", "g++", "-o", PathUtil::Exe(filename).c_str(), PathUtil::Src(filename).c_str(), "-std=c++17", NULL);
             LOG(ERROR) << "execlp error";
             exit(2);
         }

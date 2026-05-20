@@ -16,6 +16,7 @@ public:
     // 设置资源设置
     static void SetProcLimit(int cpu_limit, int mem_limit)
     {
+        // std::cout << cpu_limit << " " << mem_limit;
         struct rlimit rl;
         // 设置cpu时间限制
         rl.rlim_cur = cpu_limit;
