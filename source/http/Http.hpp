@@ -630,7 +630,7 @@ private:
         }
         // 获取正文
         size_t remain_len = content_len - _req._body.size();
-        LOG(INFO)<< _req._body.size()<< " : "<< remain_len<< " : "<< buf.ReadableLen();
+        // LOG(INFO)<< _req._body.size()<< " : "<< remain_len<< " : "<< buf.ReadableLen();
         // if(buf.ReadableLen() < content_len) // 还没传完,等下次一起拿--- 正文的数据可能很多,所以...
         if(buf.ReadableLen() < remain_len) // 没传完,先拿出来
         {       //  全部拿出来, 追加到body中
