@@ -8,7 +8,7 @@ public:
     ~View(){}
     void AllQuestionHtml(const std::vector<Question> &questions, std::string *html)
     {
-
+        
     }
     void OneQuestionHtml(const Question &question, std::string *html)
     {

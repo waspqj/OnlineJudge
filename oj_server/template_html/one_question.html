@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{number}}.{{title}}</title>
+    <!-- 引入ACE插件 -->
+    <!-- 官网链接：https://ace.c9.io/ -->
+    <!-- CDN链接：https://cdnjs.com/libraries/ace -->
+    <!-- 使用介绍：https://www.iteye.com/blog/ybc77107-2296261 -->
+    <!-- https://justcode.ikeepstudying.com/2016/05/ace-editor-%E5%9C%A8%E7%BA%BF%E4%BB%A3%E7%A0%81%E7%BC%96%E8%BE%91%E6%9E%81%E5%85%B6%E9%AB%98%E4%BA%AE/ -->
+    <!-- 引入ACE CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js" type="text/javascript"
+        charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js" type="text/javascript"
+        charset="utf-8"></script>
+    <!-- 引入jquery CDN -->
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #16161A;
+            --bg-secondary: #1F2128;
+            --bg-tertiary: #2A2D35;
+            --text-primary: #E8ECF1;
+            --text-secondary: #A1AAB6;
+            --text-muted: #6B7386;
+            --border: #353B48;
+            --accent: #7C8B9C;
+            --accent-hover: #95A5B0;
+            --danger: #BF6B6B;
+            --radius: 10px;
+            --transition: 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── 导航栏 ── */
+        .container .navbar {
+            width: 100%;
+            height: 56px;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 8px;
+        }
+
+        .container .navbar a {
+            display: inline-block;
+            padding: 8px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            line-height: 1;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 8px;
+            transition: all var(--transition);
+        }
+
+        .container .navbar a:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .container .navbar .login {
+            margin-left: auto;
+        }
+
+        /* ── 题目描述 + 代码编辑区 ── */
+        .container .part1 {
+            display: flex;
+            width: 100%;
+            height: 600px;
+            gap: 0;
+            margin-top: 0;
+        }
+
+        .container .part1 .left_desc {
+            width: 50%;
+            height: 100%;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 32px 28px;
+        }
+
+        .container .part1 .left_desc h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding: 0;
+        }
+
+        .container .part1 .left_desc pre {
+            font-size: 15px;
+            line-height: 1.75;
+            color: var(--text-secondary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            padding: 0;
+        }
+
+        .container .part1 .right_code {
+            width: 50%;
+            height: 100%;
+        }
+
+        .container .part1 .right_code .ace_editor {
+            height: 600px;
+            border-radius: 0;
+        }
+
+        /* ── 提交区域 ── */
+        .container .part2 {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+            padding: 24px 0;
+            gap: 24px;
+            margin-top: 0;
+        }
+
+        .container .part2 .result {
+            flex: 1;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            min-height: 80px;
+            padding: 20px 24px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .container .part2 .result pre {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+        }
+
+        .container .part2 .result p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin: 4px 0;
+        }
+
+        .container .part2 .btn-submit {
+            width: 140px;
+            height: 46px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            background-color: var(--accent);
+            color: #FAFAFA;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .container .part2 .btn-submit:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(124, 139, 156, 0.25);
+        }
+
+        .container .part2 .btn-submit:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* ── 滚动条 ── */
+        .container .part1 .left_desc::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .container .part1 .left_desc::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .container .part1 .left_desc::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .container .part1 .left_desc::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 导航栏， 功能不实现-->
+        <div class="navbar">
+            <a href="/">首页</a>
+            <a href="/questions">题库</a>
+            <a href="#">竞赛</a>
+            <a href="#">讨论</a>
+            <a href="#">求职</a>
+            <a class="login" href="#">登录</a>
+        </div>
+        <!-- 左右呈现，题目描述和预设代码 -->
+        <div class="part1">
+            <div class="left_desc">
+                <h3><span id="number">{{number}}</span>.{{title}}_{{star}}</h3>
+                <pre>{{desc}}</pre>
+            </div>
+            <div class="right_code">
+                <pre id="code" class="ace_editor"><textarea class="ace_text-input">{{pre_code}}</textarea></pre>
+            </div>
+        </div>
+        <!-- 提交并且得到结果，并显示 -->
+        <div class="part2">
+            <div class="result"></div>
+            <button class="btn-submit" onclick="submit()">提交代码</button>
+        </div>
+    </div>
+    <script>
+        //初始化对象
+        editor = ace.edit("code");
+
+        //设置风格和语言（更多风格和语言，请到github上相应目录查看）
+        // 主题大全：http://www.manongjc.com/detail/25-cfpdrwkkivkikmk.html
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/c_cpp");
+
+        // 字体大小
+        editor.setFontSize(16);
+        // 设置默认制表符的大小:
+        editor.getSession().setTabSize(4);
+
+        // 设置只读（true时只读，用于展示代码）
+        editor.setReadOnly(false);
+
+        // 启用提示菜单
+        ace.require("ace/ext/language_tools");
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true
+        });
+
+        function submit(){
+            // alert("嘿嘿!");
+            // 1. 收集当前页面的有关数据, 1. 题号 2.代码
+            var code = editor.getSession().getValue();
+            // console.log(code);
+            var number = $(".container .part1 .left_desc h3 #number").text();
+            // console.log(number);
+            var judge_url = "/judge/" + number;
+            // console.log(judge_url);
+            // 2. 构建json，并通过ajax向后台发起基于http的json请求
+            $.ajax({
+                method: 'Post',   // 向后端发起请求的方式
+                url: judge_url,   // 向后端指定的url发起请求
+                dataType: 'json', // 告知server，我需要什么格式
+                contentType: 'application/json;charset=utf-8',  // 告知server，我给你的是什么格式
+                data: JSON.stringify({
+                    'code':code,
+                    'input': ''
+                }),
+                success: function(data){
+                    //成功得到结果
+                    // console.log(data);
+                    show_result(data);
+                }
+            });
+            // 3. 得到结果，解析并显示到 result中
+            function show_result(data)
+            {
+                // console.log(data.status);
+                // console.log(data.reason);
+                // 拿到result结果标签
+                var result_div = $(".container .part2 .result");
+                // 清空上一次的运行结果
+                result_div.empty();
+
+                // 首先拿到结果的状态码和原因结果
+                var _status = data.status;
+                var _reason = data.reason;
+
+                var reason_lable = $( "<p>",{
+                       text: _reason
+                });
+                reason_lable.appendTo(result_div);
+
+                if(status == 0){
+                    // 请求是成功的，编译运行过程没出问题，但是结果是否通过看测试用例的结果
+                    var _stdout = data.stdout;
+                    var _stderr = data.stderr;
+
+                    var stdout_lable = $("<pre>", {
+                        text: _stdout
+                    });
+
+                    var stderr_lable = $("<pre>", {
+                        text: _stderr
+                    })
+
+                    stdout_lable.appendTo(result_div);
+                    stderr_lable.appendTo(result_div);
+                }
+                else{
+                    // 编译运行出错,do nothing
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
