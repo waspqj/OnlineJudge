@@ -1,11 +1,19 @@
 #include "./oj_control.hpp"
 // #include "../source/http/Http.hpp"
 
+Control *col = nullptr;
+void handler(int sig)
+{
+    col->OnlineMachine();
+}
 int main()
 {
     Control control;
+    col = &control;
+    signal(SIGUSR1, handler);
     HttpServer server(8888);
-    server.SetCount(0);
+    server.SetCount(3);
+    server.SetBaseDir("./wwwroot");
     server.Get("/questions", [&](HttpServer &server, HttpRequest &reqs, HttpResponse &resp){
         std::string html;
         control.AllQuestions(&html);
@@ -13,13 +21,11 @@ int main()
     });
     server.Get("/question/(\\d+)", [&](HttpServer &server, HttpRequest &reqs, HttpResponse &resp){
         std::string question_id = reqs._matches[1];
-        // LOG(INFO) << "question_id:" << question_id;
         std::string html;
         control.Question(question_id, &html);
         resp.SetContent(html, "text/html");
     });
     server.Post("/judge/(\\d+)", [&](HttpServer &server, HttpRequest &reqs, HttpResponse &resp){
-        // LOG(INFO) << "judge";
         std::string in_json = reqs._body;
         std::string out_json;
         control.Judge(reqs._matches[1], in_json, &out_json);

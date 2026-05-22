@@ -12,21 +12,21 @@ public:
     std::string ip;
     std::string port;
     int load;    // 负载
-    Mutex *mutex;
+    std::mutex *mutex;
     Machine() :ip(""), port(""), load(0), mutex(nullptr)
     {}
     ~Machine(){}
     // 提高机器的负载
     void IncreaseLoad()
     {
-        mutex->Lock();
+        mutex->lock();
         load++;
         mutex->unlock();
     }
     // 降低机器的负载
     void DecreaseLoad()
     {
-        mutex->Lock();
+        mutex->lock();
         load--;
         mutex->unlock();
     }
@@ -69,7 +69,7 @@ public:
             Machine machine;
             machine.ip = tokens[0];
             machine.port = tokens[1];
-            machine.mutex = new Mutex();
+            machine.mutex = new std::mutex();
             // 添加到机器列表和在线机列表中
             online_machines.push_back(machines.size());
             machines.push_back(machine);
@@ -86,6 +86,7 @@ public:
         {
             mtx.unlock();
             LOG(ERROR) << "no online machine, 请尽快检查!";
+            raise(SIGUSR1);
             return false;
         }
         // 遍历找到负载最小的机器
@@ -110,6 +111,7 @@ public:
         {
             if(*i == id)
             {
+                machines[id].load = 0;
                 online_machines.erase(i);
                 offline_machines.push_back(id);
                 break;
@@ -117,9 +119,19 @@ public:
         }
         mtx.unlock();
     }
-    // 恢复机器在线
-    void OnlineMachine(int id)
-    {}
+    // 一键恢复机器在线
+    void OnlineMachine()
+    {
+        mtx.lock();
+        for(auto i = offline_machines.begin(); i != offline_machines.end(); i++)
+        {
+            online_machines.push_back(*i);
+        }
+        offline_machines.clear();
+        LOG(INFO)<< "恢复所有机器在线……";
+
+        mtx.unlock();
+    }
     // 展示所有机器
     void ShowMachines()
     {
@@ -149,6 +161,11 @@ private:
 public:
     Control(){}
     ~Control(){}
+    // 一键恢复机器在线
+    void OnlineMachine()
+    {
+        lb.OnlineMachine();
+    }
     // 获取所有题目的网页
     bool AllQuestions(std::string *html)
     {
@@ -172,6 +189,8 @@ public:
             view.Error("获取单个题目页面失败!", html);
             return false;
         }
+        view.OneQuestionHtml(question, html);
+        return true;
     }
 
     // 构建,发送并接收OJ请求
@@ -189,7 +208,7 @@ public:
         // 构建编译运行参数
         Json::Value compile_value;
         Json::FastWriter writer;
-        compile_value["code"] = code + question.tail;  // 真正拿去编译的代码,加上测试用例
+        compile_value["code"] = code + "\n" + question.tail;  // 真正拿去编译的代码,加上测试用例
         compile_value["input"] = in_value["input"];
         compile_value["cpu_limit"] = question.cpu_limit;
         compile_value["mem_limit"] = question.mem_limit;

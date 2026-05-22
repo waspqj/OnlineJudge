@@ -70,7 +70,7 @@ public:
                 LOG(FATAL)<< "Read file failed: "<< desc_path;
                 return false;
             }
-            std::string header_path = question_dir + question.id + "/header.hpp";
+            std::string header_path = question_dir + question.id + "/header.cpp";
             if(!FileUtil::ReadFile(header_path, &question.header))
             {
                 LOG(FATAL)<< "Read file failed: "<< header_path;

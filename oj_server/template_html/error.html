@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        :root {
+            --bg: #16161A;
+            --text: #E8ECF1;
+            --accent: #BF6B6B;
+            --border: #2A2D35;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+        }
+        .error-box {
+            background: var(--border);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            max-width: 600px;
+        }
+        h1 { font-size: 72px; margin: 0; color: var(--accent); }
+        p { font-size: 18px; margin-top: 16px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="error-box">
+        <h1>Error!!</h1>
+        <p>{{error}}</p>
+    </div>
+</body>
+</html>
