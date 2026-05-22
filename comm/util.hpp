@@ -10,6 +10,8 @@
 #include <atomic>
 #include <vector>
 #include "log.hpp"
+#include "jsoncpp/json/json.h"
+
 
 struct TimeUtil
 {
