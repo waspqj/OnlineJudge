@@ -11,17 +11,17 @@ int main(int argc, char const *argv[])
         exit(1);
     }
     uint16_t port = atoi(argv[1]);
-    // 设置输出重定向
-    int log_fd = open("./log/log.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if (log_fd < 0) exit(1);
-    dup2(log_fd, 1);
-    dup2(log_fd, 2);
-    close(log_fd);  // 关闭多余的文件描述符
-    setvbuf(stdout, nullptr, _IONBF, 0);
-    setvbuf(stderr, nullptr, _IONBF, 0);
+    // // 设置输出重定向
+    // int log_fd = open("./log/log.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    // if (log_fd < 0) exit(1);
+    // dup2(log_fd, 1);
+    // dup2(log_fd, 2);
+    // close(log_fd);  // 关闭多余的文件描述符
+    // setvbuf(stdout, nullptr, _IONBF, 0);
+    // setvbuf(stderr, nullptr, _IONBF, 0);
     
-    Use_File_Log_Strategy;
-    DaemonModule::Daemon(1, 0);
+    // Use_File_Log_Strategy;
+    // DaemonModule::Daemon(1, 0);
 
     HttpServer server(port);
     // 要在一台4核机子上开三个编译运行服务 和 一个OJ服务

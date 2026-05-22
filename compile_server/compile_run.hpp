@@ -2,7 +2,6 @@
 
 #include "compiler.hpp"
 #include "runner.hpp"
-#include "jsoncpp/json/json.h"
 
 class CompileAndRun
 {
