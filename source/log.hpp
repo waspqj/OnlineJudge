@@ -1,16 +1,18 @@
 #ifndef __LOG_HPP__
 #define __LOG_HPP__
 
-#include "Mutex.hpp"
+// #include "Mutex.hpp"
+#include <mutex>
 #include <filesystem>
 #include <fstream>
 #include <time.h>
+#include <iostream>
 
 #define RN "\r\n"
 
 namespace LogModule
 {
-    using namespace LockModule;
+    // using namespace LockModule;
 
     //策略模式
     class LogStrategy
@@ -25,11 +27,11 @@ namespace LogModule
     public:
         void RefreshLog(std::string &message) override
         {
-            LockGuard lg(_mutex);
+            std::lock_guard<std::mutex> lg(_mutex);
             std::cout<< message<< RN;
         } 
     private:
-        Mutex _mutex;
+        std::mutex _mutex;
     };
     //写入文件策略
     #define PATH "./log"
@@ -42,7 +44,8 @@ namespace LogModule
             ,_file(file)
             ,_mutex()
         {
-            LockGuard lg(_mutex);
+            // LockGuard lg(_mutex);
+            std::lock_guard<std::mutex> lg(_mutex);
             if(std::filesystem::exists(_path))
                 return;
             try{
@@ -56,7 +59,8 @@ namespace LogModule
 
         void RefreshLog(std::string &message) override
         {
-            LockGuard lg(_mutex);
+            std::lock_guard<std::mutex> lg(_mutex);
+            // LockGuard lg(_mutex);
             std::string log = _path + (_path.back() == '/' ? "" : "/") + _file;
             std::ofstream in(log.c_str(), std::ios::app);
             if(!in.is_open())
@@ -67,7 +71,7 @@ namespace LogModule
     private:
         std::string _path;
         std::string _file;
-        Mutex _mutex;
+        std::mutex _mutex;
     };
 
     //生成日志

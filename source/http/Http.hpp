@@ -583,8 +583,8 @@ private:
         }
         std::string head_key = line.substr(0, pos);
         std::string head_val = line.substr(pos + 2); //分隔符": "两位
-        if(head_key == "User-Agent")
-            LOG(INFO)<< line;
+        // if(head_key == "User-Agent")
+            // LOG(INFO)<< line;
         _req.SetHead(head_key, head_val);
     }
     // 接收并解析请求报头
@@ -601,7 +601,6 @@ private:
             // 没有找到一行完整报头行, 但是缓冲区数据已经超了                 || 一行太多了,不正常
             if((line.size() == 0 && buf.ReadableLen() >= MAX_LINE_SIZE) || line.size() > MAX_LINE_SIZE) 
             {
-                // LOG(ERROR)<< "head";
                 _resp_statu = 414;        // URI Too Long
                 _recv_statu = RECV_ERROR;
                 return;
@@ -630,8 +629,6 @@ private:
         }
         // 获取正文
         size_t remain_len = content_len - _req._body.size();
-        // LOG(INFO)<< _req._body.size()<< " : "<< remain_len<< " : "<< buf.ReadableLen();
-        // if(buf.ReadableLen() < content_len) // 还没传完,等下次一起拿--- 正文的数据可能很多,所以...
         if(buf.ReadableLen() < remain_len) // 没传完,先拿出来
         {       //  全部拿出来, 追加到body中
             // _req._body.append(buf.ReadAndPop(buf.ReadableLen()));

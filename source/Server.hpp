@@ -1063,7 +1063,7 @@ private:
     void ReleaseInLoop()
     {
         LOG(DEBUG)<< "---- released ----"<< _sockfd;
-        LOG(INFO)<< "client-"<< _Id()<< " left......";
+        // LOG(INFO)<< "client-"<< _Id()<< " left......";
         // //设置关闭连接状态
         // _statu = DISCONNECTED;   在Release里设置
 
@@ -1296,7 +1296,7 @@ private:
         if(!_silence_connect) new_conn->RefuseSilenceConnect(_timeout);
         else new_conn->SilenceConnect();
         new_conn->Established();
-        LOG(INFO)<< "new connection:"<< new_conn->_Id();
+        // LOG(INFO)<< "new connection:"<< new_conn->_Id();
         _conn_map.emplace(_unique_id, new_conn);
         ++_unique_id;
     }
