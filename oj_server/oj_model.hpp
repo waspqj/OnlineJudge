@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <assert.h>
+#include <algorithm>
 
 using namespace LogModule;
 
@@ -85,6 +86,7 @@ public:
             // 保存 插入
             question_map.emplace(question.id, question);
         }
+       
         LOG(INFO)<< "Load questions success: "<< question_map.size();
         return true;
     }
@@ -100,6 +102,11 @@ public:
         {
             questions->push_back(item.second);
         }
+        // 根据 id 排序
+        std::sort(questions->begin(), questions->end(), [](const Question &a, const Question &b)
+        {
+            return a.id < b.id;
+        });
         return true;
     }
     // 获取单个题目

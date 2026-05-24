@@ -1,5 +1,6 @@
 #include "./oj_control.hpp"
 // #include "../source/http/Http.hpp"
+#include "../source/http/Daemon.hpp"
 
 Control *col = nullptr;
 void handler(int sig)
@@ -11,6 +12,19 @@ int main()
     Control control;
     col = &control;
     signal(SIGUSR1, handler);
+
+    // 设置输出重定向
+    int log_fd = open("./log/log.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (log_fd < 0) exit(1);
+    dup2(log_fd, 1);
+    dup2(log_fd, 2);
+    close(log_fd);  // 关闭多余的文件描述符
+    setvbuf(stdout, nullptr, _IONBF, 0);
+    setvbuf(stderr, nullptr, _IONBF, 0);
+    
+    Use_File_Log_Strategy;
+    DaemonModule::Daemon(1, 0);
+
     HttpServer server(8888);
     server.SetCount(3);
     server.SetBaseDir("./wwwroot");
