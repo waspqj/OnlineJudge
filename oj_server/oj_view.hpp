@@ -1,5 +1,6 @@
 #pragma once
-#include "oj_model.hpp"
+// #include "oj_model.hpp"
+#include "oj_model2.hpp"
 #include <ctemplate/template.h>
 
 class View
